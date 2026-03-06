@@ -24,7 +24,7 @@ const firebaseConfig = {
     appId: "1:705086479682:web:5511ad5b3e00921947bcdb",
     measurementId: "G-CGMRRC6B0B"
 };
-// 🔗 Initialize Firebase and get database
+// Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -46,6 +46,7 @@ let mousex = 0;
 let mousey = 0;
 let selectedDay = 0;
 let dayKey = 0;
+let password;
 const day = time.getDate();
 const Month = time.getMonth() + 1;
 const Year = time.getFullYear();
@@ -191,7 +192,7 @@ function newLoadDays() {
                     Snake_Score: 0},
                 Profile: {
                     createdAt: (day.toString()+"-"+Month.toString()+"-"+Year.toString()),
-                    Password: getel("PasswordInput").input},
+                    Password: password},
                 TDL: {}
             });
             setTimeout(newLoadDays, 20);
@@ -612,6 +613,7 @@ function LogIn() {
         const dbRef = ref(db);
         get(child(dbRef, `${uservalue}/Profile/Password`)).then((pass) => {
             if (pass.val() == getel("PasswordInput").value || !pass.exists()) {
+                password = getel("PasswordInput").value;
                 getel("LogInBg").hidden = true
                 sss(3, getel("UserInput").value)
                 getel("LoggedIn").innerText = "Logged in!"
@@ -632,7 +634,7 @@ function CancelLogIn() {
 }
 window.LogOut = LogOut;
 function LogOut() {
-    localStorage.setItem("UserLocal", 0); sss(3, 0);
+    localStorage.setItem("UserLocal", 0); sss(3, 0); sss(2, 0);
     TDList = {}; loadTDL();
     dayStates = {}; buildCalendar()
     getel("LogOut").hidden = true
@@ -706,5 +708,3 @@ window.addEventListener('beforeunload', function(event) {
         event.preventDefault();
     }
 });
-
-
