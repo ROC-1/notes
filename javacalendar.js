@@ -1,4 +1,3 @@
-[]
 //After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
@@ -13,7 +12,7 @@ setTimeout(() => {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// Your Firebase config
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBVOC6RVvQw2V7YSN8MF24kM0p9N1tcfTo",
     authDomain: "calendar-5487e.firebaseapp.com",
@@ -32,6 +31,7 @@ const db = getDatabase(app);
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
 let selectedColor = 1;
+let selectedColor2 = 1;
 let totalStudyTime = 0;
 let hasLoaded = 0;
 let PrevSTime = NaN;
@@ -47,6 +47,9 @@ let mousey = 0;
 let selectedDay = 0;
 let dayKey = 0;
 let password;
+let AddE;
+let editE;
+let delE;
 const day = time.getDate();
 const Month = time.getMonth() + 1;
 const Year = time.getFullYear();
@@ -70,7 +73,7 @@ console.log(`${week} is this week`);
 
 ////CONTENT LOADED////✅
 document.addEventListener("DOMContentLoaded", () => {
-    if (gss(1)==1){getel("load_heading").hidden="true";getel("loadC").hidden="true";getel("Title").innerText="Test Calendar"}
+    if (gss(1)==1){getel("load_heading").hidden="true";getel("loadC").hidden="true";getel("Title").innerText="(Test Calendar)"}
     buildCalendar();
     let colorButtons = document.querySelectorAll(".colorChange");
     colorButtons.forEach((btn, index) => {
@@ -80,8 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.classList.add("toggled");
         });
     });
-    const green = getel("color-green");
-    green.classList.add("toggled");
     TimerText = getel("Timer")
     TimerText.setAttribute("seconds", 0);
     TimerText.setAttribute("minutes", 0);
@@ -92,10 +93,46 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gss(2)==1 && gss(1)!=1) {
         StartLoad();
     }
-    for (const el of document.querySelectorAll(".colorChange")) {
-        el.setAttribute("title", "Change event colour to "+el.id.split("-").pop())
-    }
     getel("TermNum").innerText = term
+    AddE = getel("AddEvent")
+    editE = getel("EditEvent")
+    delE = getel("DeleteEvent")
+
+    const button = document.getElementById("changeColor");
+    const dropdown = document.getElementById("colorDropdown");
+    const preview = document.getElementById("changeColorInside");
+    const options = document.querySelectorAll(".colorOption");
+
+    selectedColor2 = "#1d8f00";
+    dropdown.style.display = "none";
+
+    button.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (dropdown.style.display=="none") {
+            dropdown.style.display = "grid";
+        } else {dropdown.style.display = "none";}
+    });
+
+    options.forEach((opt, index) => {
+        opt.setAttribute("title", "Change event colour to "+opt.id)
+        opt.addEventListener("click", () => {
+        selectedColor2 = opt.dataset.color;
+        preview.style.backgroundColor = selectedColor2;
+        selectedColor = index+1;
+        dropdown.style.display = "none";
+        });
+    });
+
+    document.addEventListener("click", () => {
+        dropdown.style.display = "none";
+    });
+    options.forEach(opt => {
+    opt.addEventListener("click", () => {
+    options.forEach(o => o.style.outline = "none");
+
+    opt.style.outline = "3px solid black";
+    });
+});
     loadTDL();
     Loop();
 }); document.addEventListener("click", (e) => {
@@ -105,6 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
         getel("FinalAdd").hidden = true
         getel("AddEvent").hidden = true
         getel("LogOut").hidden = true
+        editE.hidden = true
+        delE.hidden = true
     }
 })
 
@@ -152,7 +191,7 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "t"&&document.activeElement!==calInput&&adding_TDL==0&&getel("LogInBg").hidden==true) {window.scrollTo({top: 1000,behavior: 'smooth'});setTimeout(TLD_add_start, 20)}
     if (event.key == "ArrowRight") {TUp()}
     if (event.key == "ArrowLeft") {TDown()}
-    c("Key pressed: "+event.key)
+    //c("Key pressed: "+event.key)
 }); document.addEventListener('keyup', function(event) {
     if (event.key == "`") {pressingBacktick = 0}
 });
@@ -353,7 +392,7 @@ function buildCalendar() {
             box.setAttribute("today", "true");
             if (gss(2)=="1") {
                 if (box.getAttribute("boxColor") == "WeeklyEvent") {
-                    getel("quickText").textContent = "Today: "+termdata.WEventName
+                    //getel("quickText").textContent = "Today: "+termdata.WEventName
                     setTimeout(() => {
                         box.style.outline = "0px solid"
                         box.style.border = "8px solid rgb(88, 106, 117)";
@@ -362,10 +401,10 @@ function buildCalendar() {
                         box.style.height = "53px"
                     }, 10);
                 } else {
-                    getel("quickText").textContent = "Today: No events"
+                    //getel("quickText").textContent = "Today: No events"
                 }
             } else {
-                getel("quickText").textContent = ""
+                //getel("quickText").textContent = ""
             }
             box.style.width = "115px"
             box.style.height = "53px"
@@ -389,7 +428,8 @@ function buildCalendar() {
         });
     }
     const scrollFrame = getel("calendarScroll");
-    if (defaultTerm == term) {scrollFrame.scrollTo({ top: ((week-1)*86)-67, behavior: "smooth" })}
+    if (defaultTerm == term) {if(week==2){scrollFrame.scrollTo({ top: ((week-1)*86)-47/*67 for full*/, behavior: "smooth" })}
+                            else {scrollFrame.scrollTo({ top: ((week-1)*86)-140, behavior: "smooth" })}}
     else {scrollFrame.scrollTo({ top: 0, behavior: "smooth" })}
     modifyEvents();
 }
@@ -398,12 +438,24 @@ function boxClicked($day, $box) {
     let text = input.value.trim();
     if (!pressingControl) {
     if ($day in dayStates || (text != "")) {
+        if ($day in dayStates && (text === "")) {
+            setTimeout(() => {
+                editE.hidden = !editE.hidden
+                editE.style.left = mousex+5+"px";
+                editE.style.top = mousey+5+"px";
+                delE.hidden = editE.hidden
+                delE.style.left = mousex+5+"px";
+                delE.style.top = mousey+40+"px";
+                AddE.hidden = true
+                selectedDay = $day
+            }, 50);
+        } else {
         if (input.value != "") {
             switch(selectedColor) {
             case 2: {text = (text+"")+"/o";break;}
             case 3: {text = (text+"")+"/r";break;}
-            case 4: {text = (text+"")+"/g";break;}
-            case 5: {text = (text+"")+"/p";break;}
+            case 4: {text = (text+"")+"/p";break;}
+            case 5: {text = (text+"")+"/g";break;}
             case 6: {text = (text+"")+"/c";break;}
         }}
         // Save or clear local data
@@ -445,12 +497,14 @@ function boxClicked($day, $box) {
         modifyEvents()
         //setTimeout(dueWorkList, 300)
         selectedDay = 0;
+        }
     } else {setTimeout(() => {
-        const AddE = getel("AddEvent")
         AddE.hidden = !AddE.hidden;
         AddE.style.left = mousex+5+"px";
         AddE.style.top = mousey+5+"px";
         selectedDay = $day;
+        editE.hidden = true
+        delE.hidden = true
     }, 50)}
 }};
 
@@ -616,7 +670,7 @@ function LogIn() {
                 password = getel("PasswordInput").value;
                 getel("LogInBg").hidden = true
                 sss(3, getel("UserInput").value)
-                getel("LoggedIn").innerText = "Logged in!"
+                getel("LoggedIn").innerText = "Logged in as "+gss(3);
                 localStorage.setItem("UserLocal", gss(3))
                 if (loadclicked) {
                     StartLoad()
@@ -699,6 +753,26 @@ function AddEvent() {
             if (el.getAttribute("data-date") == selectedDay) {
                 boxClicked(selectedDay, el)
             }
+        }
+    }
+}
+
+window.editEvent = editEvent
+function editEvent() {
+    editE.hidden = true
+    delE.hidden = true
+    /*getel("eventInput").focus()*/
+    AddEventStart()
+}
+window.deleteEvent = deleteEvent
+function deleteEvent() {
+    editE.hidden = true
+    delE.hidden = true
+    delete dayStates[selectedDay]
+    for (const el of document.querySelectorAll(".day-box")) {
+        if (el.getAttribute("data-date") == selectedDay) {
+            renderTooltip(el, "")
+            el.querySelector(".event-text").textContent = ""
         }
     }
 }
