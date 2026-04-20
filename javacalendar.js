@@ -1,3 +1,4 @@
+[]
 //After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
@@ -63,7 +64,7 @@ const MonthList = {
 let termdata = { SD:[26, 20, 20, 12], SM:[1, 4, 7, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[10,10,10,9],
     WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, WEventName:"Weekly Event", 
     HolidayWeeks: [2, 3, 2, 0], PFDays:{"1":["26-01", "27-01", "28-01", "03-04"]}
-}; const defaultTerm = 1;
+}; const defaultTerm = 2;
 
 let term = defaultTerm;
 let week = 1+Math.floor(daysApart({day: termdata.SD[term-1], month: termdata.SM[term-1]}, {day: day, month: Month}) / 7);
