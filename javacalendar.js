@@ -1,3 +1,4 @@
+
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
