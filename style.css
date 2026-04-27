@@ -803,6 +803,7 @@ _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
     box-shadow: 0 6px 22px rgba(2,6,23,0.6);
     overflow:clip;
     border: 1px solid var(--divider);
+    margin-top: 40px;
 }
 .dropdown-toggle{
     background-color: #586a75;
@@ -815,6 +816,12 @@ _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
     user-select:none;
     outline: none;
     --arrow-rotate: 0deg; /* toggled in JS */
+} #dropdown-toggle-u1 {
+    background-color: #414d55;
+} #dropdown-toggle-u2 {
+    background-color: #414d55;
+} #dropdown-toggle-u3 {
+    background-color: #414d55;
 } .dropdown-divider:hover {
     box-shadow: 0 12px 35px rgba(2, 6, 23, 0.747);
     transition: 200ms;
@@ -876,7 +883,24 @@ _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
     justify-content:space-between;
     align-items:center;
     border:1px solid rgba(255,255,255,0.02);
+    border: #ffffff solid 2px;
+    border-radius: 30px;
+    background-color: #ffffff21;
+} #dropdown-item:hover {
+    background-color: #ffffff3f;
+    cursor: pointer;
 }
+.docsLogo {
+    width: 50px;
+    transform: translatex(10px);
+}
+
+
+.docText {
+    font-size: 20px;
+    transform: translateX(-25px);
+}
+
 .muted-small{color:var(--muted);font-size:13px}
 /* small responsive tweak */
 @media (max-width:520px){
